@@ -1,35 +1,72 @@
-# Task-Manager-API
+# Task Manager API 📝
 
-API REST para gerenciamento de tarefas, desenvolvida com **Node.js, TypeScript, Express e PostgreSQL**.
+API REST para gerenciamento de usuários e tarefas, desenvolvida com **Node.js, TypeScript, Express e PostgreSQL**.
 
-O projeto tem como objetivo colocar em prática conceitos de desenvolvimento backend, desde a criação dos endpoints até a comunicação com o banco de dados, utilizando uma estrutura organizada por responsabilidades.
+O projeto foi desenvolvido com foco em aprendizado e prática de desenvolvimento **backend**, aplicando conceitos como separação de responsabilidades, regras de negócio, autenticação, middlewares, validação de dados e comunicação com banco de dados relacional.
 
-## Tecnologias
+## 🚀 Tecnologias
 
-* **Node.js** — ambiente de execução
-* **TypeScript** — tipagem e desenvolvimento
-* **Express** — criação da API REST
-* **PostgreSQL** — banco de dados relacional
-* **pg** — comunicação com o PostgreSQL
-* **dotenv** — gerenciamento de variáveis de ambiente
+* **Node.js**
+* **TypeScript**
+* **Express**
+* **PostgreSQL**
+* **pg**
+* **JWT (JSON Web Token)**
+* **bcrypt**
+* **dotenv**
 
-## Sobre o projeto
+## 📌 Funcionalidades
 
-A aplicação permite realizar operações básicas de gerenciamento de tarefas através de uma API REST.
+### Usuários
 
-A estrutura foi organizada em camadas para separar as responsabilidades da aplicação:
+* Criar usuário
+* Listar usuários
+* Buscar usuário por ID
+* Atualizar usuário
+* Remover usuário
+* Autenticação por e-mail e senha
+* Geração de token JWT
+* Validação de dados de entrada
+
+### Tarefas
+
+* Criar tarefa
+* Listar tarefas
+* Buscar tarefa por ID
+* Atualizar tarefa
+* Remover tarefa
+* Alternar status de conclusão da tarefa
+* Associar tarefas a usuários através de `user_id`
+* Validação de dados
+* Validação de IDs
+* Tratamento de recursos inexistentes
+
+### Segurança
+
+* Senhas armazenadas utilizando hash com `bcrypt`
+* Autenticação utilizando JWT
+* Middleware para validação do token
+* Utilização de variáveis de ambiente para informações sensíveis
+* Queries parametrizadas no PostgreSQL
+
+## 🏗️ Arquitetura
+
+A aplicação utiliza uma estrutura baseada na separação de responsabilidades:
 
 ```text
 Cliente
    │
    ▼
- Routes
+Routes
+   │
+   ▼
+Middlewares
    │
    ▼
 Controller
    │
    ▼
- Service
+Service
    │
    ▼
 Repository
@@ -38,166 +75,261 @@ Repository
 PostgreSQL
 ```
 
-Essa separação permite que cada parte da aplicação tenha uma responsabilidade específica, facilitando a manutenção e evolução do projeto.
-
-## Funcionalidades
-
-* [x] Criar tarefas
-* [x] Listar tarefas
-* [x] Buscar tarefa por ID
-* [x] Atualizar tarefas
-* [x] Remover tarefas
-* [x] Validação de dados
-* [x] Tratamento de erros HTTP
-* [x] Queries parametrizadas
-* [x] Separação entre Controller, Service e Repository
-
-## Estrutura
-
-```text
-src/
-├── controllers/
-│   └── task.controller.ts
-│
-├── database/
-│   └── connections.js
-│
-├── repositories/
-│   └── task.repository.ts
-│
-├── routes/
-│   ├── index.ts
-│   └── task.routes.ts
-│
-├── services/
-│   └── task.service.ts
-│
-└── app.ts
-```
-
 ### Routes
 
-Responsável por definir os endpoints da API e encaminhar as requisições para os controllers.
+Responsáveis por definir os endpoints da API e encaminhar as requisições para os controllers.
+
+### Middlewares
+
+Responsáveis por tarefas executadas durante o processamento da requisição, como:
+
+* Validação de IDs
+* Validação dos dados recebidos
+* Validação de autenticação
+* Verificação de token JWT
+* Tratamento de erros
 
 ### Controllers
 
-Responsável pela comunicação com o cliente através do protocolo HTTP.
+Responsáveis pela comunicação HTTP.
 
-Recebe os dados da requisição, chama o service apropriado e retorna a resposta.
+Recebem os dados da requisição, chamam os services responsáveis pela operação e retornam a resposta para o cliente.
 
 ### Services
 
-Responsável pelas regras de negócio da aplicação.
+Responsáveis pelas regras de negócio da aplicação.
 
-É a camada intermediária entre o controller e o repository.
+Essa camada concentra a lógica que não deve ficar diretamente dentro dos controllers ou repositories.
 
 ### Repositories
 
-Responsável pelo acesso ao banco de dados.
+Responsáveis pelo acesso ao banco de dados.
 
-As operações SQL ficam concentradas nessa camada, evitando que as consultas sejam espalhadas pelo restante da aplicação.
+As consultas SQL ficam concentradas nessa camada, mantendo o restante da aplicação independente da implementação das queries.
 
 ### Database
 
 Responsável pela configuração da conexão com o PostgreSQL.
 
-## API
+## 📂 Estrutura do projeto
 
-### Listar tarefas
-
-```http
-GET /tasks
+```text
+src/
+├── controllers/
+│   ├── homeController.ts
+│   ├── taskController.ts
+│   └── userController.ts
+│
+├── database/
+│   └── connections.js
+│
+├── middlewares/
+│   ├── authMiddleware.ts
+│   ├── errorMiddleware.ts
+│   ├── taskMiddleware.ts
+│   └── userMiddleware.ts
+│
+├── repositories/
+│   ├── taskRepository.ts
+│   └── userRepository.ts
+│
+├── routes/
+│   ├── index.ts
+│   ├── task.routes.ts
+│   └── user.routes.ts
+│
+├── services/
+│   ├── taskService.ts
+│   └── userService.ts
+│
+├── types/
+│   ├── task.ts
+│   └── user.ts
+│
+├── app.ts
+└── server.ts
 ```
 
-Retorna todas as tarefas cadastradas.
+## 🔌 Endpoints
 
-### Buscar tarefa por ID
+### 👤 Usuários
+
+| Método   | Endpoint           | Descrição                      |
+| -------- | ------------------ | ------------------------------ |
+| `GET`    | `/users`           | Lista todos os usuários        |
+| `GET`    | `/users/:id`       | Busca um usuário pelo ID       |
+| `GET`    | `/users/:id/tasks` | Lista as tarefas de um usuário |
+| `POST`   | `/users`           | Cria um novo usuário           |
+| `POST`   | `/users/auth`      | Autentica um usuário           |
+| `PUT`    | `/users/:id`       | Atualiza um usuário            |
+| `DELETE` | `/users/:id`       | Remove um usuário              |
+
+### 📝 Tarefas
+
+| Método   | Endpoint               | Descrição                  |
+| -------- | ---------------------- | -------------------------- |
+| `GET`    | `/tasks`               | Lista todas as tarefas     |
+| `GET`    | `/tasks/:id`           | Busca uma tarefa pelo ID   |
+| `POST`   | `/tasks`               | Cria uma nova tarefa       |
+| `PUT`    | `/tasks/:id`           | Atualiza uma tarefa        |
+| `PATCH`  | `/tasks/:id/completed` | Alterna o status da tarefa |
+| `DELETE` | `/tasks/:id`           | Remove uma tarefa          |
+
+Os endpoints acima correspondem às rotas atualmente definidas no projeto.
+
+## 📥 Exemplos de requisições
+
+### Criar usuário
 
 ```http
-GET /tasks/:id
+POST /users
+Content-Type: application/json
 ```
 
-Retorna uma tarefa específica.
+```json
+{
+  "name": "Luis",
+  "email": "luis@email.com",
+  "password": "123456"
+}
+```
 
-Exemplo:
+### Autenticar usuário
 
 ```http
-GET /tasks/1
+POST /users/auth
+Content-Type: application/json
 ```
+
+```json
+{
+  "email": "luis@email.com",
+  "password": "123456"
+}
+```
+
+A autenticação retorna um token JWT que pode ser utilizado posteriormente para acessar recursos protegidos.
 
 ### Criar tarefa
 
 ```http
 POST /tasks
+Content-Type: application/json
 ```
-
-Exemplo de corpo:
 
 ```json
 {
-  "title": "Estudar Node.js"
+  "user_id": 1,
+  "title": "Estudar Node.js",
+  "description": "Continuar os estudos de desenvolvimento backend"
 }
 ```
+
+Uma tarefa possui atualmente os seguintes dados:
+
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "title": "Estudar Node.js",
+  "description": "Continuar os estudos de desenvolvimento backend",
+  "completed": false
+}
+```
+
+O `user_id` permite relacionar cada tarefa ao usuário responsável por ela.
 
 ### Atualizar tarefa
 
 ```http
-PUT /tasks/:id
-```
-
-Exemplo:
-
-```http
 PUT /tasks/1
+Content-Type: application/json
 ```
 
 ```json
 {
-  "title": "Estudar Node.js e TypeScript"
+  "title": "Estudar Node.js e TypeScript",
+  "description": "Continuar o desenvolvimento da API"
 }
 ```
 
-### Remover tarefa
+### Alternar conclusão
 
 ```http
-DELETE /tasks/:id
+PATCH /tasks/1/completed
 ```
 
-Exemplo:
+Esse endpoint alterna o estado `completed` da tarefa.
+
+### Buscar tarefas de um usuário
 
 ```http
-DELETE /tasks/1
+GET /users/1/tasks
 ```
 
-## Configuração
+Retorna as tarefas relacionadas ao usuário informado.
+
+## 🔐 Autenticação
+
+A API utiliza **JWT** para autenticação.
+
+Após realizar o login através de:
+
+```http
+POST /users/auth
+```
+
+o servidor retorna um token que pode ser enviado no header `Authorization`:
+
+```http
+Authorization: Bearer SEU_TOKEN
+```
+
+O middleware de autenticação verifica a existência do header, valida o formato `Bearer` e verifica o token utilizando o segredo configurado em `JWT_SECRET`. O ID do usuário autenticado é então disponibilizado através de `req.userId`.
+
+> A autenticação e autorização do projeto ainda estão em evolução.
+
+## 🗄️ Banco de dados
+
+O projeto utiliza **PostgreSQL** como banco de dados relacional e o pacote `pg` para realizar a comunicação com o banco.
+
+As consultas utilizam parâmetros separados dos valores recebidos pela API:
+
+```sql
+SELECT * FROM tasks WHERE id = $1;
+```
+
+Isso evita a construção de queries através da concatenação direta de valores recebidos do usuário e ajuda a prevenir **SQL Injection**.
+
+## ⚙️ Configuração
 
 ### Pré-requisitos
 
+Antes de executar o projeto, tenha instalado:
+
 * Node.js
-* PostgreSQL
 * npm
+* PostgreSQL
 
-### Instalação
-
-Clone o repositório:
-
-```bash
-git clone <URL_DO_REPOSITORIO>
-```
-
-Entre na pasta:
+### 1. Clone o repositório
 
 ```bash
-cd tasks-api
+git clone https://github.com/LuisFellipe-Dev/Task-Manager-API.git
 ```
 
-Instale as dependências:
+### 2. Entre na pasta
+
+```bash
+cd Task-Manager-API
+```
+
+### 3. Instale as dependências
 
 ```bash
 npm install
 ```
 
-### Variáveis de ambiente
+### 4. Configure as variáveis de ambiente
 
 Crie um arquivo `.env` na raiz do projeto:
 
@@ -207,53 +339,77 @@ DB_PORT=5432
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 DB_NAME=tasks
+
+JWT_SECRET=sua_chave_secreta
 ```
 
 Configure os valores de acordo com o seu ambiente PostgreSQL.
 
-### Executando
+**Não compartilhe ou versione o arquivo `.env`.**
 
-Inicie o projeto em modo de desenvolvimento:
+### 5. Execute o projeto
+
+Modo de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-A API ficará disponível em:
+Build:
+
+```bash
+npm run build
+```
+
+Executar a versão compilada:
+
+```bash
+npm start
+```
+
+Por padrão, a API é executada em:
 
 ```text
 http://localhost:3000
 ```
 
-## Banco de dados
+Os scripts de desenvolvimento, build e execução estão definidos no `package.json` do projeto.
 
-O projeto utiliza **PostgreSQL** para armazenamento das tarefas.
+## 🧪 Validações
 
-As consultas são realizadas através do pacote `pg` e utilizam parâmetros nas queries:
+A API possui middlewares específicos para validar os dados recebidos antes que eles cheguem às camadas responsáveis pela lógica da aplicação.
 
-```sql
-SELECT * FROM tasks WHERE id = $1;
-```
+Entre as validações implementadas estão:
 
-Em vez de inserir diretamente os valores recebidos pelo usuário na consulta, os parâmetros são enviados separadamente para o PostgreSQL.
+* IDs devem ser inteiros positivos
+* Nome de usuário obrigatório
+* E-mail obrigatório
+* Senha obrigatória
+* Título da tarefa obrigatório
+* Limite de caracteres para título
+* Limite de caracteres para descrição
+* Validação do `user_id`
+* Validação de credenciais durante a autenticação
 
-Isso ajuda a evitar problemas como **SQL Injection**.
+As validações de tarefas e usuários estão concentradas nos respectivos middlewares.
 
-## Tratamento de erros
+## 📡 Tratamento de respostas
 
-A API utiliza códigos HTTP para representar diferentes situações.
+A API utiliza códigos HTTP para representar o resultado das operações.
 
 Exemplos:
 
 ```text
 200 OK
 201 Created
+204 No Content
 400 Bad Request
+401 Unauthorized
 404 Not Found
 500 Internal Server Error
 ```
 
-As respostas de erro seguem um formato JSON:
+As respostas de erro utilizam JSON, por exemplo:
 
 ```json
 {
@@ -261,13 +417,11 @@ As respostas de erro seguem um formato JSON:
 }
 ```
 
-## Objetivo do projeto
+## 🎯 Objetivo do projeto
 
-Este projeto está sendo desenvolvido como parte dos estudos de **desenvolvimento backend**.
+O objetivo principal deste projeto é praticar o desenvolvimento de uma API backend utilizando uma estrutura próxima da utilizada em aplicações reais.
 
-O foco principal é compreender não apenas como escrever o código, mas também como estruturar uma aplicação backend de forma organizada.
-
-Entre os conceitos praticados estão:
+Além da implementação dos endpoints, o projeto busca desenvolver conhecimentos em:
 
 * APIs REST
 * Node.js
@@ -276,33 +430,38 @@ Entre os conceitos praticados estão:
 * PostgreSQL
 * SQL
 * HTTP
+* JWT
+* Autenticação
+* Middlewares
+* Validação de dados
+* Regras de negócio
 * Controllers
 * Services
 * Repositories
-* Middlewares
-* Validação de dados
-* Tratamento de erros
+* Separação de responsabilidades
 * Variáveis de ambiente
 * Queries parametrizadas
-* Separação de responsabilidades
+* Tratamento de erros
 
-## Próximos passos
+O projeto está sendo desenvolvido de forma incremental, adicionando novas funcionalidades conforme novos conceitos de backend são estudados.
 
-O projeto continuará sendo evoluído conforme novos conceitos forem estudados.
+## 🔮 Próximos passos
 
-Algumas funcionalidades planejadas:
+Algumas funcionalidades que podem ser adicionadas durante a evolução do projeto:
 
-* [ ] Autenticação
-* [ ] Usuários
-* [ ] Associação entre usuários e tarefas
-* [ ] Middleware de autenticação
-* [ ] Status das tarefas
-* [ ] Filtros
-* [ ] Paginação
-* [ ] Testes automatizados
-* [ ] Documentação da API
-* [ ] Deploy
+* [ ] Finalizar autorização baseada no usuário autenticado
+* [ ] Garantir que usuários só possam acessar suas próprias tarefas
+* [ ] Melhorar tratamento global de erros
+* [ ] Adicionar filtros de tarefas
+* [ ] Adicionar paginação
+* [ ] Adicionar testes automatizados
+* [ ] Documentar a API com Swagger/OpenAPI
+* [ ] Melhorar a configuração do banco
+* [ ] Dockerizar a aplicação
+* [ ] Realizar deploy da API
 
 ---
 
-**Projeto desenvolvido para estudos e prática de desenvolvimento backend com Node.js e TypeScript.**
+Projeto desenvolvido para estudos e prática de desenvolvimento **backend com Node.js, TypeScript, Express e PostgreSQL**.
+
+**Autor:** Luis Fellipe
