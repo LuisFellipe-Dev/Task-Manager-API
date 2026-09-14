@@ -449,8 +449,8 @@ O projeto está sendo desenvolvido de forma incremental, adicionando novas funci
 
 Algumas funcionalidades que podem ser adicionadas durante a evolução do projeto:
 
-* [ ] Finalizar autorização baseada no usuário autenticado
-* [ ] Garantir que usuários só possam acessar suas próprias tarefas
+* [x] Finalizar autorização baseada no usuário autenticado
+* [x] Garantir que usuários só possam acessar suas próprias tarefas
 * [ ] Melhorar tratamento global de erros
 * [ ] Adicionar filtros de tarefas
 * [ ] Adicionar paginação
