@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import type { CreateUser, PublicUser, User, UserAuth } from "../types/user.js";
+import type { CreateUser, PublicUser} from "../types/user.js";
 import { userRepository } from "../repositories/userRepository.js";
 import type { Task } from "../types/task.js";
 import { taskRepository } from "../repositories/taskRepository.js";

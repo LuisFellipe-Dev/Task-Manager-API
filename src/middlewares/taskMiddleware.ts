@@ -15,7 +15,7 @@ export const taskMiddleware = {
     },
     validateCreateTask: (req: Request, res: Response, next: NextFunction) => {
         const task: CreateTask = req.body;
-        const user_id = Number(task.user_id);
+        const user_id = Number(req.userId);
 
         if(!Number.isInteger(user_id) || user_id <= 0){
             return res.status(400).json({
@@ -40,8 +40,6 @@ export const taskMiddleware = {
                 })
             }
         }
-
-        task.user_id = Number(task.user_id);
 
         task.title = task.title.trim();
 

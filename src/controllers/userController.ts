@@ -19,7 +19,7 @@ export const userController = {
         return res.json(user);
     },
     getUserTasks: async (req: Request, res: Response) => {
-        const id = Number(req.params.id);
+        const id = Number(req.userId);
         const userTasks = await userService.getUserTasks(id);
 
         if(!userTasks){

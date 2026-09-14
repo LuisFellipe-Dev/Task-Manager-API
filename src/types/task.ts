@@ -7,7 +7,6 @@ export interface Task {
 }
 
 export interface CreateTask {
-    user_id: number
     title: string
     description?: string
 }
